@@ -5,7 +5,7 @@ LAST_NAME varchar(125),
 SALARY int,
 DEPARTMENT varchar(125),
 JOINING_DATE datetime
-)
+);
 
 
 insert into Worker ( FIRST_NAME, LAST_NAME, SALARY, DEPARTMENT, JOINING_DATE)
