@@ -34,6 +34,8 @@ update  Worker set SALARY = 7000000 where DEPARTMENT = 'manager';
 
 --5. Write an SQL query to update all worker bonus 10% whose joining_date before ‘2014-
 --04-11 09:00:00’ otherwise bonus update 5% and also check department name is ‘Admin’.
+update  Worker set SALARY = iif(JOINING_DATE < '2014-04-11 09:00:00', SALARY*1.10, SALARY*1.05) where DEPARTMENT = 'Admin';
+--or
 update  Worker set SALARY = 
 case
 when JOINING_DATE < '2014-04-11 09:00:00' then SALARY*1.10
