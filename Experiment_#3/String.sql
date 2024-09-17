@@ -74,7 +74,21 @@ select charindex('n',FIRST_NAME) from Worker where FIRST_NAME = 'Sanjoy';
 select avg(salary) as avg_salary, department from Worker group by department;
 
 --14. List all the employees who have maximum or minimum salary in each department
--- ⚠️
+select * from worker inner join  
+(select max(salary) as max, min(salary) as min, department from worker group by department) as temp 
+on (worker.salary=temp.max or worker.salary=temp.min) 
+where worker.department=temp.department;
+--with min-max indicator:
+select  worker.FIRST_NAME, case
+when worker.salary=temp.max 
+then "max"
+else "min"
+end
+as MinMax, worker.SALARY, worker.DEPARTMENT from worker inner join  
+(select max(salary) as max, min(salary) as min, department from worker group by department) as temp 
+on (worker.salary=temp.max or worker.salary=temp.min) 
+where worker.department=temp.department;
+
 
 --15. Write an SQL query to find the position of the alphabet (‘r’) in the FIRST_NAME
 -- column ‘Rana’ from Worker table.
