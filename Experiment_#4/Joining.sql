@@ -52,3 +52,5 @@ values
 
 --1. List all the employees except ‘Manager’ & ‘Asst. Manager’.
 select * from Worker inner join Title on Worker.WORKER_ID = Title.WORKER_REF_ID where Title.WORKER_TITLE not in ('Manager','Asst. Manager');
+--13. Write an SQL query to fetch the list of employees with the same salary.
+select * from worker inner join (select salary from worker group by salary having count(salary)>1) as sameSalaries on worker.salary=sameSalaries.salary;
