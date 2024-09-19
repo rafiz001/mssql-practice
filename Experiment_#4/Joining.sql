@@ -54,6 +54,8 @@ values
 select * from Worker inner join Title on Worker.WORKER_ID = Title.WORKER_REF_ID where Title.WORKER_TITLE not in ('Manager','Asst. Manager');
 --13. Write an SQL query to fetch the list of employees with the same salary.
 select * from worker inner join (select salary from worker group by salary having count(salary)>1) as sameSalaries on worker.salary=sameSalaries.salary;
+--15. Write an SQL query to fetch the first 50% records from a table.
+select top (select count(*)/2  from worker) * from worker;
 --21. Write an SQL query to print the name of employees having the highest salary in each department.
 select FIRST_NAME+" "+LAST_NAME as name, worker.salary, worker.department from worker 
 inner join (select max(salary) as salary, department from worker group by department) as temp
