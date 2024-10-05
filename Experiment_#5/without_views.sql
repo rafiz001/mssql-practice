@@ -80,6 +80,33 @@ inner join customer on orders.customer_id=customer.customer_id
 inner join salesman on orders.salesman_id=salesman.salesman_id;
 
 -- 7. Write a query to create a view that finds the salesman who has the customer with the highest order of a day.
-select name from salesman where salesman_id = 
-(select salesman_id from orders where )
-where 
+select * from salesman 
+inner join 
+(select top 1 count(*) as customer_count, salesman_id from orders  where ord_date='2012-09-10' group by salesman_id order by customer_count desc) as highestOrder
+on highestOrder.salesman_id=salesman.salesman_id;
+
+-- 8. Write a query to create a view that finds the salesman who has the customer with the highest order at least 3 times on a day.
+select * from salesman 
+inner join 
+(select top 1 count(*) as customer_count, salesman_id from orders  where ord_date='2012-09-10' group by salesman_id having count(*)>=3 order by customer_count desc) as highestOrder
+on highestOrder.salesman_id=salesman.salesman_id;
+
+-- 9. Write a query to create a view that shows all of the customers who have the highest grade.
+select * from customer where grade = (select max(grade) from customer);
+
+-- 10. Write a query to create a view that shows the number of the salesman in each city.
+select count(*), city from salesman group by city;
+
+-- 11. Write a query to create a view that shows the average and total orders for each salesman after his or her name. (Assume all names are unique)
+select name, count(*) as total_sales from  --can't understand, what is average for!
+(select salesman.name,orders.ord_no from salesman
+inner join orders on salesman.salesman_id=orders.salesman_id) as salesmens_order
+group by name;
+
+-- 12. Write a query to create a view that shows each salesman with more than one customers.
+select  name, count(*) as customers_count from 
+(select salesman.name, customer.* from customer inner join salesman on customer.salesman_id=salesman.salesman_id) as customers
+group by name having count(*)>1;
+
+
+
