@@ -108,5 +108,27 @@ select  name, count(*) as customers_count from
 (select salesman.name, customer.* from customer inner join salesman on customer.salesman_id=salesman.salesman_id) as customers
 group by name having count(*)>1;
 
+-- 13. Write a query to create a view that shows all matches of customers with salesman such that at least one customer in the city of customer served by a salesman in the city of the salesman.
+
+-- 14. Write a query to create a view that shows the number of orders in each day.
+select ord_date as day, count(*) as orders from orders group by ord_date;
+
+-- 15. Write a query to create a view that finds the salesmen who issued orders on October 10th, 2012.
+select * from salesman 
+inner join orders on orders.salesman_id=salesman.salesman_id
+where orders.ord_date = '2012-10-10';
+
+-- 16. Write a query to create a view that finds the salesmen who issued orders on either August 17th, 2012 or October 10th, 2012.
+select * from salesman 
+inner join orders on orders.salesman_id=salesman.salesman_id
+where orders.ord_date = '2012-10-10' or orders.ord_date = '2012-08-17' ;
+
+
+
+
+
+
+
+
 
 
