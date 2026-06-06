@@ -50,3 +50,38 @@ Zone on Account_Detail.Zone_Id=Zone.Zone_Id
 end;
 go
 exec SPdetails;
+
+-- 2. Create a simple stored procedure “SPaverage” to find Branch _name and Amount of Branch where amount will be greater than particular amount (say 17000). Here branch_name and amount will be passed by parameter
+go
+create proc SPaverage
+@branch_name varchar(50),
+@amount int
+as begin
+select branch_name, sum(amount) from ( 
+select branch_name, amount from Account_Detail inner join Branch on Account_Detail.Branch_Id=Branch.Br_Id where Branch.Branch_Name=@Branch_name
+) as temp 
+group by branch_name having sum(amount)>@amount
+end;
+go
+exec SPaverage 'Shaheb bazar',17000;
+
+--3. Create a simple stored procedure “SPbalance” to find Amount of a particular zone. Here zone name will be passed by parameter and amount will be shown by using return value().
+go 
+create proc SPbalance
+@zone varchar(20)
+as begin
+return (
+select sum(amount) from ( 
+select name as zone_name, amount from Account_Detail inner join Zone on Account_Detail.Zone_Id=Zone.Zone_Id where Zone.Name=@zone
+) as temp 
+group by zone_name
+)
+end;
+
+go
+
+declare @balance int
+exec @balance=SPbalance 'Dhaka'
+print @balance
+
+
