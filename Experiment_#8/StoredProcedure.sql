@@ -84,4 +84,87 @@ declare @balance int
 exec @balance=SPbalance 'Dhaka'
 print @balance
 
+--4. Create a simple stored procedure “SPamount” to Find all account holders name with their branch name and zone name whose name has substring ‘Mr.’ and Amount Less than Maximum Amount
+go
+create proc SPamount
+as begin
+select Acc_holder_name, branch_name, Name as zone_name from Account_Detail 
+inner join Branch on Account_Detail.Branch_Id=Branch.Br_Id
+inner join Zone on Account_Detail.Zone_Id=Zone.Zone_Id
+where Amount<(select max(amount) from Account_Detail)
+ and Acc_holder_name like '%Mr.%'
+end;
+go
+exec SPamount;
 
+-- 5. Create a simple stored procedure “SPdetailsInfo” to find number of customer of each Zone. Here number of customers need to be printed as output parameter and zone_name will be passed as parameter
+go
+create proc SPdetailsInfo
+@zone_name varchar(20),
+@customer int out
+as begin
+select @customer=count(Account_no) from (
+select Account_no, Name as zone_name from Account_Detail 
+inner join Zone on Account_Detail.Zone_Id=Zone.Zone_Id
+where name=@zone_name
+) as temp
+group by zone_name
+end;
+go
+
+declare @custNum int
+exec SPdetailsInfo 'Dhaka', @custNum out
+print 'customer number: '
+print @custNum
+
+--6. Create procedure like “spEmployeeSalaryDetails1” which has four parameter. three parameter match the StartAmount, EndAmount value, Branch_Name Value and another parameter return this value, in this procedure find the number of customer where StartAmount, EndAmount value, Branch_Name value pass by parameter.
+go
+create proc spEmployeeSalaryDetails1
+@StartAmount int,
+@EndAmount int,
+@Branch_Name varchar(20),
+@custNum int out
+as begin
+select @custNum=count(Account_no) from 
+(select Account_no, Branch_Name, Amount from Account_Detail
+inner join Branch on Account_Detail.Branch_Id=Branch.Br_Id
+where (Amount between @StartAmount and @EndAmount)
+    and Branch_Name=@Branch_Name
+) as temp
+group by Branch_Name
+;
+end ;
+go
+declare @custNum int
+exec spEmployeeSalaryDetails1 170000,200000,'Shaheb bazar',@custNum out
+print 'Customer number of given crieteria: '
+print @custNum
+go
+
+--7. Create a simple stored procedure “SPdetailsInfo” to find Zone_name, number of customer of a specific Zone.
+go
+create proc SPdetailsInfo2
+@zone varchar(20)
+as begin
+select zone_name, count(Account_no) as customer_number from 
+(select Account_no, Name as zone_name from Account_Detail
+inner join Zone on Zone.Zone_Id=Account_Detail.Zone_Id
+where Name=@zone) as temp
+group by zone_name
+end;
+go
+exec SPdetailsInfo2 'Dhaka'
+
+--8. Create a simple stored procedure “SPdetailsInfo1” to find Zone_name, number of Branch of a specific Zone(Zone name pass by parameter).
+go
+create proc SPdetailsInfo1
+@zone varchar(20)
+as begin
+select zone_name,count(Branch_Id) as Branch_number from 
+(select  Branch_Id, Name as zone_name from Account_Detail
+inner join Zone on Zone.Zone_Id=Account_Detail.Zone_Id
+where Name=@zone) as temp
+group by zone_name
+end;
+go
+exec SPdetailsInfo1 'Rajshahi'
